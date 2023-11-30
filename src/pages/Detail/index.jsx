@@ -4,10 +4,11 @@ import { useNavigate, useParams } from "react-router-dom";
 import styled from "styled-components";
 import { getFormattedDate } from "util/date";
 import { useDispatch, useSelector } from "react-redux";
-import { deleteLetter, editLetter } from "redux/modules/letters";
+import { deleteLetter, editLetter } from "redux/modules/lettersSlice";
+import axios from "axios";
 
 const DetailLetter = () => {
-  const letterList = useSelector((state) => state.letters);
+  const letterList = useSelector((state) => state.letters.letters);
   const dispatch = useDispatch();
   const [isEditing, setIsEditing] = useState(false);
   const [editingText, setEditingText] = useState("");
@@ -20,6 +21,7 @@ const DetailLetter = () => {
     const answer = window.confirm("정말로 삭제하시겠습니까?");
     if (!answer) return; // 취소 시
 
+    axios.delete(`${process.env.REACT_APP_SERVER_URL}/letters/${id}`);
     dispatch(deleteLetter(id));
     navigate("/letter");
   };

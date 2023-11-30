@@ -2,7 +2,7 @@ import React, { useEffect } from "react";
 import { data } from "shared/data";
 import styled from "styled-components";
 import { useSelector, useDispatch } from "react-redux";
-import { selectMember } from "redux/modules/member";
+import { selectMember } from "redux/modules/memberSlice";
 import userEvent from "@testing-library/user-event";
 
 const Tabs = () => {

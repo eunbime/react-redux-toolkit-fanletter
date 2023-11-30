@@ -11,15 +11,9 @@ const Header = () => {
           <StHeaderLink to="/">
             <img src={LOGO_IMG} alt="" width="60px" />
           </StHeaderLink>
-          <StHeaderLink to="/letter">To.aespa</StHeaderLink>
         </HeaderLeft>
         <Nav />
       </StHeader>
-      <StLogo>
-        <Link to="/">
-          <img src={HEADER_IMG} alt="title-logo" width="400px" />
-        </Link>
-      </StLogo>
     </>
   );
 };
@@ -31,19 +25,21 @@ const LOGO_IMG =
 
 const StHeader = styled.nav`
   width: 100%;
-  height: 3.5rem;
+  position: fixed;
   display: flex;
   align-items: center;
   justify-content: space-between;
   padding: 0 2rem;
   gap: 3rem;
   background-color: rgba(255, 255, 255, 0.3);
+  z-index: 888;
   /* background: linear-gradient(to right, var(--mainBlack), var(--aespa4)); */
 `;
 
 const HeaderLeft = styled.div`
   display: flex;
   align-items: center;
+  gap: 2rem;
 `;
 
 const StHeaderLink = styled(Link)`

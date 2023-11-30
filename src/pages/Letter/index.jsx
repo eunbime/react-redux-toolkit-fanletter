@@ -1,11 +1,20 @@
-import React, { useContext, useState } from "react";
+import React, { useEffect, useState } from "react";
 import LetterForm from "../../components/LetterForm";
 import LetterList from "../../components/LetterList";
 import styled from "styled-components";
 import Tabs from "components/Tabs";
+import { useDispatch, useSelector } from "react-redux";
+import { __addLetter, __getLetters } from "redux/modules/lettersSlice";
 
 function Letter() {
+  const dispatch = useDispatch();
   const [modalOpen, setModalOpen] = useState(false);
+  const store = useSelector((state) => state);
+  console.log(store);
+
+  useEffect(() => {
+    dispatch(__getLetters());
+  }, []);
 
   const handleModal = () => {
     setModalOpen(true);
@@ -33,7 +42,7 @@ const StContainer = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding: 1rem;
+  padding: 7rem 0 1rem 0;
 `;
 
 const InputBox = styled.div`

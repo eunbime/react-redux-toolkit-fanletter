@@ -1,22 +1,19 @@
-import React, { useCallback, useContext, useEffect, useState } from "react";
+import React, { useState } from "react";
 import styled from "styled-components";
 import { data } from "../shared/data";
 import uuid from "react-uuid";
-import { useDispatch } from "react-redux";
-import { addLetter } from "redux/modules/letters";
-import { selectMember } from "redux/modules/member";
+import { useDispatch, useSelector } from "react-redux";
+import { addLetter } from "redux/modules/lettersSlice";
+import { selectMember } from "redux/modules/memberSlice";
+import axios from "axios";
 
 const LetterForm = ({ setModalOpen }) => {
   const dispatch = useDispatch();
+  const { nickname, userId } = useSelector((state) => state.auth);
 
-  const [nickname, setNickname] = useState("");
   const [content, setContent] = useState("");
   const [member, setMember] = useState("카리나");
   const [memberPhoto, setMemberPhoto] = useState("karina.jpeg");
-
-  const handleNickname = useCallback((e) => {
-    setNickname(e.target.value);
-  }, []);
 
   const handleContent = (e) => {
     setContent(e.target.value);
@@ -40,18 +37,18 @@ const LetterForm = ({ setModalOpen }) => {
       memberPhoto,
       createdAt: new Date(),
       avatar: null,
+      userId,
     };
 
+    axios.post(`${process.env.REACT_APP_SERVER_URL}/letters`, newLetter);
+
     dispatch(addLetter(newLetter));
-    // setLetterList((prev) => [newLetter, ...prev]);
-    setNickname("");
     setContent("");
     dispatch(selectMember(member));
     setModalOpen(false);
   };
 
   const closeModal = () => {
-    setNickname("");
     setContent("");
     setModalOpen(false);
   };
@@ -70,7 +67,7 @@ const LetterForm = ({ setModalOpen }) => {
         >
           <StSection>
             <label>닉네임</label>
-            <StInput type="text" value={nickname} onChange={handleNickname} />
+            <p>{nickname}</p>
           </StSection>
           <StSection>
             <label>내용</label>
@@ -117,6 +114,12 @@ const StSection = styled.section`
   & label {
     padding: 0.5rem 0;
     color: var(--mainWhite);
+  }
+
+  p {
+    font-size: large;
+    font-weight: bold;
+    color: var(--aespa4);
   }
 `;
 

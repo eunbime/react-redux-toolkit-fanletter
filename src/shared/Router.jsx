@@ -6,19 +6,26 @@ import Letter from "../pages/Letter";
 import Detail from "../pages/Detail";
 import Profile from "pages/Profile";
 import Login from "pages/Login";
+import { useSelector } from "react-redux";
 
 const Router = () => {
+  const { accessToken } = useSelector((state) => state.auth);
   return (
     <BrowserRouter>
       <Routes>
-        <Route path="/" element={<Layout />}>
-          <Route index path="/" element={<Home />} />
-          <Route path="/letter" element={<Letter />} />
-          <Route path="/profile" element={<Profile />} />
-          <Route path="/login" element={<Login />} />
-          <Route path="*" element={<Navigate replace to="/" />} />
-        </Route>
-        <Route path="/letter/:id" element={<Detail />} />
+        <Route path="/login" element={<Login />} />
+        <Route path="*" element={<Navigate replace to="/login" />} />
+        {accessToken && (
+          <>
+            <Route path="/" element={<Layout />}>
+              <Route index path="/" element={<Home />} />
+              <Route path="/letter" element={<Letter />} />
+              <Route path="/profile" element={<Profile />} />
+              {/* <Route path="*" element={<Navigate replace to="/" />} /> */}
+            </Route>
+            <Route path="/letter/:id" element={<Detail />} />
+          </>
+        )}
       </Routes>
     </BrowserRouter>
   );

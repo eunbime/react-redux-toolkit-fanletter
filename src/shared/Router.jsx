@@ -9,7 +9,7 @@ import Login from "pages/Login";
 import { useSelector } from "react-redux";
 
 const Router = () => {
-  const { accessToken } = useSelector((state) => state.auth);
+  const { accessToken } = useSelector((state) => state.auth.auth);
   return (
     <BrowserRouter>
       <Routes>

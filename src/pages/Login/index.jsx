@@ -5,8 +5,11 @@ import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
 
 const Login = () => {
-  const auth = useSelector((state) => state.auth);
+  const auth = useSelector((state) => state.auth.auth);
   const [isLogin, setIsLogin] = useState(true);
+
+  const store = useSelector((state) => state);
+  console.log(store);
 
   useEffect(() => {
     console.log(auth);

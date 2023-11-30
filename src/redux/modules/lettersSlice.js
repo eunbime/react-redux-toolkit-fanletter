@@ -13,7 +13,9 @@ export const __getLetters = createAsyncThunk(
   "getLetters",
   async (payload, thunkAPI) => {
     try {
-      const { data } = await axios.get("http://localhost:4000/letters");
+      const { data } = await axios.get(
+        "http://localhost:4000/letters?_sort=createdAt&_order=desc"
+      );
       console.log(data);
       return thunkAPI.fulfillWithValue(data);
     } catch (error) {

@@ -1,19 +1,36 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import { data } from "../shared/data";
 import uuid from "react-uuid";
 import { useDispatch, useSelector } from "react-redux";
 import { addLetter } from "redux/modules/lettersSlice";
 import { selectMember } from "redux/modules/memberSlice";
-import axios from "axios";
+import axios, { AxiosHeaders } from "axios";
 
 const LetterForm = ({ setModalOpen }) => {
   const dispatch = useDispatch();
-  const { nickname, userId } = useSelector((state) => state.auth);
-
+  const { nickname, userId, accessToken } = useSelector(
+    (state) => state.auth.auth
+  );
   const [content, setContent] = useState("");
   const [member, setMember] = useState("카리나");
   const [memberPhoto, setMemberPhoto] = useState("karina.jpeg");
+
+  const fetchUser = async () => {
+    const { data } = await axios.get(
+      "https://moneyfulpublicpolicy.co.kr/user",
+      {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      }
+    );
+    console.log(data);
+  };
+
+  useEffect(() => {
+    fetchUser();
+  }, []);
 
   const handleContent = (e) => {
     setContent(e.target.value);
@@ -25,26 +42,30 @@ const LetterForm = ({ setModalOpen }) => {
     setMemberPhoto(photo.memberPhoto);
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!nickname || !content) return alert("닉네임과 내용을 입력해주세요");
+    try {
+      if (!nickname || !content) return alert("닉네임과 내용을 입력해주세요");
 
-    const newLetter = {
-      id: uuid(),
-      nickname,
-      content,
-      member,
-      memberPhoto,
-      createdAt: new Date(),
-      avatar: null,
-      userId,
-    };
+      const newLetter = {
+        id: uuid(),
+        nickname,
+        content,
+        member,
+        memberPhoto,
+        createdAt: new Date(),
+        avatar: null,
+        userId,
+      };
 
-    axios.post(`${process.env.REACT_APP_SERVER_URL}/letters`, newLetter);
+      axios.post(`${process.env.REACT_APP_SERVER_URL}/letters`, newLetter);
 
-    dispatch(addLetter(newLetter));
+      dispatch(addLetter(newLetter));
+    } catch (error) {
+      console.log(error);
+    }
     setContent("");
-    dispatch(selectMember(member));
+    dispatch(selectMember(member)); // 멤버 자동 선택
     setModalOpen(false);
   };
 

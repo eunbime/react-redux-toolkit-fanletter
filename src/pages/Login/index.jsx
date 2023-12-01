@@ -1,15 +1,11 @@
 import Form from "components/LoginForm";
 import React, { useEffect, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { useNavigate } from "react-router-dom";
+import { useSelector } from "react-redux";
 import styled from "styled-components";
 
 const Login = () => {
   const auth = useSelector((state) => state.auth.auth);
   const [isLogin, setIsLogin] = useState(true);
-
-  const store = useSelector((state) => state);
-  console.log(store);
 
   useEffect(() => {
     console.log(auth);

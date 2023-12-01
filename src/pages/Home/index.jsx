@@ -3,26 +3,14 @@ import { Link } from "react-router-dom";
 import styled from "styled-components";
 import { data } from "shared/data";
 import ModalProfile from "components/ModalProfile";
-import { useDispatch, useSelector } from "react-redux";
-import { __getAuth } from "redux/modules/aurhSlice";
-import axios from "axios";
-import { __getLetters } from "redux/modules/lettersSlice";
+import { useSelector } from "react-redux";
 
 const PROFILE_PHOTO = "aespa-profile.jpeg";
 
 function Home() {
-  const { isLoading } = useSelector((state) => state.auth);
-  const dispatch = useDispatch();
+  const { isLoading } = useSelector((state) => state.auth.auth);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [memberId, setMemberId] = useState(0);
-  // const [isLoading, setIsLoading] = useState(true);
-
-  // GET user
-
-  // const fetchLogin = async () => {
-  //   const response = await axios.get("https://moneyfulpublicpolicy.co.kr/user");
-  //   console.log(response);
-  // };
 
   const handleModal = useCallback((id) => {
     const selectedMember = data.find((item) => item.id === id);

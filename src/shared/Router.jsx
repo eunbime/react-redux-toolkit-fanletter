@@ -10,18 +10,21 @@ import { useSelector } from "react-redux";
 
 const Router = () => {
   const { accessToken } = useSelector((state) => state.auth.auth);
+  console.log(accessToken);
+
   return (
     <BrowserRouter>
       <Routes>
         <Route path="/login" element={<Login />} />
         <Route path="*" element={<Navigate replace to="/login" />} />
+
         {accessToken && (
           <>
             <Route path="/" element={<Layout />}>
               <Route index path="/" element={<Home />} />
               <Route path="/letter" element={<Letter />} />
               <Route path="/profile" element={<Profile />} />
-              {/* <Route path="*" element={<Navigate replace to="/" />} /> */}
+              <Route path="*" element={<Navigate replace to="/" />} />
             </Route>
             <Route path="/letter/:id" element={<Detail />} />
           </>

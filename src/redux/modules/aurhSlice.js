@@ -1,12 +1,10 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
 
-// const initialState = localStorage.getItem("user")
-//   ? JSON.parse(localStorage.getItem("user"))
-//   : { userId: "", nickname: "", accessToken: "", avatar: "" };
-
 const initialState = {
-  auth: {},
+  auth: localStorage.getItem("user")
+    ? JSON.parse(localStorage.getItem("user"))
+    : {},
   user: {},
   isLoading: false,
   isError: false,
@@ -25,7 +23,7 @@ export const __getUser = createAsyncThunk(
           },
         }
       );
-      console.log(data);
+      console.log("getUser", data);
       return thunkAPI.fulfillWithValue(data);
     } catch (error) {
       console.log(error);
@@ -39,15 +37,18 @@ const authSlice = createSlice({
   initialState,
   reducers: {
     loginUser: (state, action) => {
-      state.auth.userId = action.payload.userId;
-      state.auth.nickname = action.payload.nickname;
-      state.auth.accessToken = action.payload.accessToken;
-      state.auth.avatar = action.payload.avatar;
-
-      localStorage.setItem("user", JSON.stringify(state));
+      state.auth = action.payload;
+      localStorage.setItem("user", JSON.stringify(state.auth));
     },
     logoutUser: (state) => {
       localStorage.removeItem("user");
+    },
+    updateProfile: (state, action) => {
+      state.auth = { ...state.auth, ...action.payload };
+      localStorage.setItem(
+        "user",
+        JSON.stringify({ ...state.auth, ...action.payload })
+      );
     },
   },
   extraReducers: {
@@ -61,4 +62,5 @@ const authSlice = createSlice({
 });
 
 export default authSlice.reducer;
-export const { loginUser, logoutUser, registerUser } = authSlice.actions;
+export const { loginUser, logoutUser, registerUser, updateProfile } =
+  authSlice.actions;

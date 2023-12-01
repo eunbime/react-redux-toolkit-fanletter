@@ -1,21 +1,39 @@
 import Avatar from "components/common/Avatar";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import styled from "styled-components";
 import { getFormattedDate } from "util/date";
 import { useDispatch, useSelector } from "react-redux";
 import { deleteLetter, editLetter } from "redux/modules/lettersSlice";
 import axios from "axios";
+import { __getUser } from "redux/modules/aurhSlice";
 
 const DetailLetter = () => {
+  const { user, auth } = useSelector((state) => state.auth);
   const letterList = useSelector((state) => state.letters.letters);
   const dispatch = useDispatch();
   const [isEditing, setIsEditing] = useState(false);
   const [editingText, setEditingText] = useState("");
+  const [authorized, setAuthorized] = useState(false);
   const navigate = useNavigate();
   const { id } = useParams();
-  const { nickname, avatar, member, createdAt, memberPhoto, content } =
-    letterList.find((letter) => letter.id === id);
+  const { nickname, avatar, member, createdAt, memberPhoto, content, userId } =
+    letterList?.find((letter) => letter.id === id);
+
+  useEffect(() => {
+    console.log(user);
+    console.log(letterList);
+    dispatch(__getUser(auth.accessToken));
+    if (user?.success) {
+      setAuthorized(user.id === userId);
+    }
+  }, [auth.accessToken]);
+
+  console.log(authorized);
+
+  // check
+  console.log("user", user.success);
+  console.log("auth", auth);
 
   const handleDelete = (id) => {
     const answer = window.confirm("정말로 삭제하시겠습니까?");
@@ -50,10 +68,7 @@ const DetailLetter = () => {
       <LetterBox>
         <ProFileContainer>
           <li>
-            <Profile>
-              <Avatar src={avatar} size="large" />
-              <img src={avatar} alt="" width="50px" />
-            </Profile>
+            <Avatar src={avatar} />
             <span>From.{nickname}</span>
           </li>
           <li
@@ -63,38 +78,40 @@ const DetailLetter = () => {
               alignItems: "flex-end",
             }}
           >
-            <Profile>
-              <img src={memberPhoto} alt="member" />
-            </Profile>
+            <Avatar src={memberPhoto} alt="member" />
             <span>To.{member}</span>
           </li>
         </ProFileContainer>
         <li>{getFormattedDate(createdAt)}</li>
-        {isEditing ? (
-          <>
-            <textarea
-              name=""
-              id=""
-              cols="30"
-              rows="10"
-              autoFocus
-              defaultValue={content}
-              maxLength="150"
-              onChange={(e) => setEditingText(e.target.value)}
-            />
-            <ButtonSection>
-              <StButton onClick={() => setIsEditing(false)}>취소</StButton>
-              <StButton onClick={() => handleSubmit(id)}>완료</StButton>
-            </ButtonSection>
-          </>
+        {authorized ? (
+          isEditing ? (
+            <>
+              <textarea
+                name=""
+                id=""
+                cols="30"
+                rows="10"
+                autoFocus
+                defaultValue={content}
+                maxLength="150"
+                onChange={(e) => setEditingText(e.target.value)}
+              />
+              <ButtonSection>
+                <StButton onClick={() => setIsEditing(false)}>취소</StButton>
+                <StButton onClick={() => handleSubmit(id)}>완료</StButton>
+              </ButtonSection>
+            </>
+          ) : (
+            <>
+              <StContent>{content}</StContent>
+              <ButtonSection>
+                <StButton onClick={() => setIsEditing(true)}>수정</StButton>
+                <StButton onClick={() => handleDelete(id)}>삭제</StButton>
+              </ButtonSection>
+            </>
+          )
         ) : (
-          <>
-            <StContent>{content}</StContent>
-            <ButtonSection>
-              <StButton onClick={() => setIsEditing(true)}>수정</StButton>
-              <StButton onClick={() => handleDelete(id)}>삭제</StButton>
-            </ButtonSection>
-          </>
+          <StContent>{content}</StContent>
         )}
       </LetterBox>
     </Container>

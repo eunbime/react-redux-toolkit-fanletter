@@ -1,9 +1,8 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
-import fakeData from "fakeData.json";
 
 const initialState = {
-  letters: fakeData,
+  letters: [],
   isLoading: false,
   isError: false,
   error: null,
@@ -17,6 +16,7 @@ export const __getLetters = createAsyncThunk(
         "http://localhost:4000/letters?_sort=createdAt&_order=desc"
       );
       console.log(data);
+      // localStorage.setItem("letters", JSON.stringify(data));
       return thunkAPI.fulfillWithValue(data);
     } catch (error) {
       console.log(error);
@@ -45,6 +45,15 @@ const lettersSlice = createSlice({
         return letter;
       });
     },
+    updateLetter: (state, action) => {
+      const { userId, imgUrl, input } = action.payload;
+      state.letters = state.letters.map((letter) => {
+        if (letter.userId === userId) {
+          return { ...letter, avatar: imgUrl, nickname: input };
+        }
+        return letter;
+      });
+    },
   },
   extraReducers: {
     [__getLetters.pending]: (state, action) => {
@@ -66,4 +75,5 @@ const lettersSlice = createSlice({
 });
 
 export default lettersSlice.reducer;
-export const { addLetter, deleteLetter, editLetter } = lettersSlice.actions;
+export const { addLetter, deleteLetter, editLetter, updateLetter } =
+  lettersSlice.actions;

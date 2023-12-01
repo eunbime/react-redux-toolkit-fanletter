@@ -1,23 +1,133 @@
-import React, { useState } from "react";
-import { useSelector } from "react-redux";
+import axios from "axios";
+import Avatar from "components/common/Avatar";
+import React, { useEffect, useRef, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { updateProfile } from "redux/modules/aurhSlice";
+import { updateLetter } from "redux/modules/lettersSlice";
 import styled from "styled-components";
 
-const defaultProfile = "default-profile.jpeg";
-
 const Profile = () => {
-  const { userId, nickname, avatar } = useSelector((state) => state.auth);
+  const dispatch = useDispatch();
+  const { userId, nickname, avatar, accessToken } = useSelector(
+    (state) => state.auth.auth
+  );
+  const letters = useSelector((state) => state.letters.letters);
   const [isEditing, setIsEditing] = useState(false);
+  const [input, setInput] = useState(nickname);
+  const [newName, setNewName] = useState("");
+  const [imgUrl, setImgUrl] = useState("");
+  const [imgFile, setImgFile] = useState(null);
+  const imageInput = useRef();
+
+  useEffect(() => {
+    setNewName(nickname);
+  }, [nickname]);
+
+  useEffect(() => {
+    setImgUrl(avatar);
+  }, [avatar]);
+
+  const onClickImageUpload = () => {
+    imageInput.current.click();
+  };
+
+  const onChangeFile = (e) => {
+    if (e.target.files[0]) {
+      const fileURL = URL.createObjectURL(e.target.files[0]);
+      setImgUrl(fileURL);
+      setImgFile(e.target.files[0]);
+    }
+  };
+
+  const cancelHandler = () => {
+    const answer = window.confirm(
+      "수정 사항이 사라집니다. 정말 취소하시겠습니까?"
+    );
+    if (!answer) return;
+    setInput("");
+    setIsEditing(false);
+  };
+
+  const completeHandler = async () => {
+    // form 형식으로 추가하기 위해 formData 생성자 사용
+    const formData = new FormData();
+    formData.append("avatar", imgFile);
+    formData.append("nickname", input);
+
+    const answer = window.confirm("새 닉네임을 적용하시겠습니까?");
+    if (!answer) return;
+
+    // 서버 반영
+    const response = await axios.patch(
+      `${process.env.REACT_APP_BASE_URL}/profile`,
+      formData,
+      {
+        headers: {
+          "Content-Type": "multipart/form-data", // formData 반드시 명시해야함
+          Authorization: `Bearer ${accessToken}`,
+        },
+      }
+    );
+
+    const profile = { ...response.data };
+    delete profile.message;
+    delete profile.success;
+
+    dispatch(updateProfile(profile));
+
+    letters.map((letter) => {
+      if (letter.userId === userId) {
+        axios.patch(
+          `${process.env.REACT_APP_SERVER_URL}/letters/${letter.id}`,
+          {
+            avatar: imgUrl,
+            nickname: input,
+          }
+        );
+      }
+    });
+
+    dispatch(updateLetter({ userId, imgUrl, input }));
+
+    // 화면 반영 (안하면 새로고침해야 반영됨)
+    setNewName(input);
+    setIsEditing(false);
+  };
 
   return (
     <Container>
       <ProfileCard>
         <h2>프로필</h2>
-        <ImgBox>
-          <img src={avatar || defaultProfile} alt="" />
-        </ImgBox>
-        {isEditing ? <input value={nickname} /> : <p>{nickname}</p>}
-        <span>{userId}</span>
-        <button onClick={() => setIsEditing(!isEditing)}>프로필 수정</button>
+        <Avatar src={imgUrl} size="large" />
+        {isEditing && (
+          <button onClick={onClickImageUpload}>이미지 업로드</button>
+        )}
+        <FileInput
+          ref={imageInput}
+          type="file"
+          name="file"
+          accept="image/*"
+          onChange={onChangeFile}
+        />
+        {isEditing ? (
+          <>
+            <input
+              defaultValue={input}
+              onChange={(e) => setInput(e.target.value)}
+            />
+            <span>{userId}</span>
+            <div>
+              <button onClick={cancelHandler}>취소</button>
+              <button onClick={completeHandler}>수정완료</button>
+            </div>
+          </>
+        ) : (
+          <>
+            <p>{newName}</p>
+            <span>{userId}</span>
+            <button onClick={() => setIsEditing(true)}>프로필 수정</button>
+          </>
+        )}
       </ProfileCard>
     </Container>
   );
@@ -34,7 +144,6 @@ const Container = styled.div`
 const ProfileCard = styled.div`
   background-color: #fff;
   width: 500px;
-  height: 400px;
   margin: 0 auto;
   display: flex;
   flex-direction: column;
@@ -42,6 +151,7 @@ const ProfileCard = styled.div`
   align-items: center;
   gap: 1rem;
   border-radius: 1rem;
+  padding: 2rem 0;
 
   h2 {
     font-size: x-large;
@@ -67,17 +177,8 @@ const ProfileCard = styled.div`
   }
 `;
 
-const ImgBox = styled.figure`
-  background-color: #eee;
-  width: 200px;
-  height: 200px;
-  border-radius: 50%;
-  overflow: hidden;
-
-  img {
-    width: inherit;
-    height: inherit;
-  }
+const FileInput = styled.input`
+  display: none;
 `;
 
 export default Profile;

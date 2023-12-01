@@ -4,17 +4,12 @@ import LetterList from "../../components/LetterList";
 import styled from "styled-components";
 import Tabs from "components/Tabs";
 import { useDispatch, useSelector } from "react-redux";
-import { __addLetter, __getLetters } from "redux/modules/lettersSlice";
 
 function Letter() {
   const dispatch = useDispatch();
   const [modalOpen, setModalOpen] = useState(false);
   const store = useSelector((state) => state);
   console.log(store);
-
-  useEffect(() => {
-    dispatch(__getLetters());
-  }, []);
 
   const handleModal = () => {
     setModalOpen(true);

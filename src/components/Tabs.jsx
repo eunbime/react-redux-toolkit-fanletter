@@ -16,8 +16,6 @@ const Tabs = () => {
   return (
     <StButtonSection>
       {data.map((item) => {
-        console.log(activeMember);
-        console.log(item.member);
         return (
           <StFilterMember
             key={item.id}

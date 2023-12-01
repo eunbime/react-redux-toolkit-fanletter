@@ -1,42 +1,40 @@
 import React from "react";
 import styled, { css } from "styled-components";
 
-const defaultUser =
-  "https://i.namu.wiki/i/M0j6sykCciGaZJ8yW0CMumUigNAFS8Z-dJA9h_GKYSmqqYSQyqJq8D8xSg3qAz2htlsPQfyHZZMmAbPV-Ml9UA.webp";
+const defaultUser = "default-user.png";
 
-const Avatar = ({ src, size }) => {
+const Avatar = ({ src, alt, size }) => {
   return (
-    <AvatarFigure>
-      <img src={src || defaultUser} alt="avatar" />
+    <AvatarFigure size={size}>
+      <img src={src || defaultUser} alt={alt || "avatar"} />
     </AvatarFigure>
   );
 };
 
 const AvatarFigure = styled.figure`
+  border-radius: 50%;
+  background-color: #fff;
+  margin-bottom: 0.5rem;
+  overflow: hidden;
+
   ${(props) => {
     switch (props.size) {
       case "large":
         return css`
-          width: 75px;
-          height: 75px;
+          width: 8rem;
+          height: 8rem;
         `;
       default:
         return css`
-          width: 50px;
-          height: 50px;
+          width: 4rem;
+          height: 4rem;
         `;
     }
   }}
-  width: 3rem;
-  height: 3rem;
-  border-radius: 50%;
-  background-color: gray;
-  margin-bottom: 0.5rem;
-  overflow: hidden;
 
   & img {
-    width: 50px;
-    height: 50px;
+    width: inherit;
+    height: inherit;
     object-fit: cover;
   }
 `;

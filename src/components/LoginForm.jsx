@@ -3,7 +3,7 @@ import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import { loginUser, registerUser } from "redux/modules/aurhSlice";
+import { loginUser } from "redux/modules/aurhSlice";
 import styled from "styled-components";
 
 const Form = ({ isLogin, setIsLogin }) => {
@@ -33,16 +33,15 @@ const Form = ({ isLogin, setIsLogin }) => {
 
     try {
       const { data } = await axios.post(
-        `${process.env.REACT_APP_BASE_URL}/login`,
+        `${process.env.REACT_APP_BASE_URL}/login?expiresIn=30m`,
         newLoginUser
       );
       dispatch(loginUser(data));
-      // reset();
       alert("성공적으로 로그인 되었습니다!");
       navigate("/");
     } catch (error) {
       console.log(error);
-      alert("아미디 또는 비밀번호가 맞지 않습니다.");
+      alert("아미디 또는 비밀번호가 일치하지 않습니다.");
     }
   };
 
@@ -67,8 +66,8 @@ const Form = ({ isLogin, setIsLogin }) => {
         setIsLogin(true);
       }
     } catch (error) {
-      console.log(error);
-      alert("다시 시도해주세요.");
+      console.log(error.message);
+      alert("아이디 비밀번호를 다시 확인해주세요.");
     }
   };
 
@@ -103,6 +102,8 @@ const Form = ({ isLogin, setIsLogin }) => {
           <input
             type="id"
             placeholder="아이디"
+            minLength="4"
+            maxLength="10"
             {...register("id", userId)}
             value={id}
             onChange={(e) => setId(e.target.value)}

@@ -6,31 +6,19 @@ import { useDispatch, useSelector } from "react-redux";
 import { addLetter } from "redux/modules/lettersSlice";
 import { selectMember } from "redux/modules/memberSlice";
 import axios, { AxiosHeaders } from "axios";
+import { __getUser, logoutUser } from "redux/modules/aurhSlice";
+import { useNavigate } from "react-router-dom";
 
 const LetterForm = ({ setModalOpen }) => {
   const dispatch = useDispatch();
-  const { nickname, userId, accessToken } = useSelector(
-    (state) => state.auth.auth
-  );
+  const navigate = useNavigate();
+  const { nickname, userId, avatar } = useSelector((state) => state.auth.auth);
+  const user = useSelector((state) => state.auth.user);
   const [content, setContent] = useState("");
   const [member, setMember] = useState("카리나");
   const [memberPhoto, setMemberPhoto] = useState("karina.jpeg");
 
-  const fetchUser = async () => {
-    const { data } = await axios.get(
-      "https://moneyfulpublicpolicy.co.kr/user",
-      {
-        headers: {
-          Authorization: `Bearer ${accessToken}`,
-        },
-      }
-    );
-    console.log(data);
-  };
-
-  useEffect(() => {
-    fetchUser();
-  }, []);
+  console.log(user);
 
   const handleContent = (e) => {
     setContent(e.target.value);
@@ -45,17 +33,22 @@ const LetterForm = ({ setModalOpen }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
+      if (!user.success) {
+        alert("로그인이 만료되었습니다.");
+        dispatch(logoutUser());
+        navigate("/login");
+      }
       if (!nickname || !content) return alert("닉네임과 내용을 입력해주세요");
 
       const newLetter = {
-        id: uuid(),
+        // id: uuid(),
         nickname,
         content,
         member,
         memberPhoto,
         createdAt: new Date(),
-        avatar: null,
         userId,
+        avatar,
       };
 
       axios.post(`${process.env.REACT_APP_SERVER_URL}/letters`, newLetter);

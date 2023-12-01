@@ -3,17 +3,30 @@ import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import { getFormattedDate } from "util/date";
 import Avatar from "./common/Avatar";
-
-const defaultUser =
-  "https://i.namu.wiki/i/M0j6sykCciGaZJ8yW0CMumUigNAFS8Z-dJA9h_GKYSmqqYSQyqJq8D8xSg3qAz2htlsPQfyHZZMmAbPV-Ml9UA.webp";
+import { useDispatch, useSelector } from "react-redux";
+import { logoutUser } from "redux/modules/aurhSlice";
 
 const LetterCard = ({ letter }) => {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const user = useSelector((state) => state.auth.user);
   const { id, nickname, content, createdAt, member, avatar, memberPhoto } =
     letter;
 
+  console.log(user.nickname);
+
+  const handleToDetailOrLogin = () => {
+    if (!user.success) {
+      alert("로그인이 만료되었습니다.");
+      dispatch(logoutUser());
+      navigate("/login");
+    } else {
+      navigate(`/letter/${id}`);
+    }
+  };
+
   return (
-    <LetterWrapper onClick={() => navigate(`/letter/${id}`)}>
+    <LetterWrapper onClick={handleToDetailOrLogin}>
       <ProFileContainer>
         <li>
           <Avatar src={avatar} />
@@ -26,9 +39,7 @@ const LetterCard = ({ letter }) => {
             alignItems: "flex-end",
           }}
         >
-          <ProfileFigure>
-            <img src={memberPhoto} alt="member-profile" />
-          </ProfileFigure>
+          <Avatar src={memberPhoto} />
           <Name>To.{member}</Name>
         </li>
       </ProFileContainer>

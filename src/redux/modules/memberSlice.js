@@ -6,10 +6,7 @@ const memberSlice = createSlice({
   name: "member",
   initialState,
   reducers: {
-    selectMember: (state, action) => {
-      const activeMember = action.payload;
-      return activeMember;
-    },
+    selectMember: (_, action) => action.payload,
   },
 });
 

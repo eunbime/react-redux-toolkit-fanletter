@@ -1,19 +1,17 @@
 import React, { useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import { logoutUser } from "redux/modules/aurhSlice";
 import styled from "styled-components";
 
 const defaultProfile = "default-profile.jpeg";
 
 const Nav = () => {
-  const dispatch = useDispatch();
   const navigate = useNavigate();
-  const { token, avatar } = useSelector((state) => state.auth);
+  const { accessToken, avatar } = useSelector((state) => state.auth.auth);
   const [isOpenMenu, setIsOpenMenu] = useState(false);
 
   const handleLogout = () => {
-    dispatch(logoutUser());
+    localStorage.removeItem("user");
     navigate("/login");
   };
 
@@ -29,7 +27,7 @@ const Nav = () => {
         {isOpenMenu && (
           <ProfileMenu onMouseLeave={() => setIsOpenMenu(false)}>
             <button onClick={() => navigate("/profile")}>프로필 정보</button>
-            {token === "" ? (
+            {accessToken === "" ? (
               <button onClick={() => navigate("/login")}>로그인</button>
             ) : (
               <button onClick={handleLogout}>로그아웃</button>

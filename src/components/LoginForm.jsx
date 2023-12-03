@@ -3,16 +3,13 @@ import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import { loginUser } from "redux/modules/aurhSlice";
+import { loginUser } from "redux/modules/authSlice";
 import styled from "styled-components";
+import api from "../axios/api";
 
 const Form = ({ isLogin, setIsLogin }) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const [id, setId] = useState("");
-  const [password, setPassword] = useState("");
-  const [confirmPassword, setConfirmPassword] = useState("");
-  const [nickname, setNickname] = useState("");
 
   const {
     register,
@@ -21,21 +18,9 @@ const Form = ({ isLogin, setIsLogin }) => {
     reset,
   } = useForm({ mode: "onChange" });
 
-  const onSubmit = ({ id, password }) => {
-    console.log(id, password);
-  };
-
-  const onLoginHandler = async () => {
-    const newLoginUser = {
-      id,
-      password,
-    };
-
+  const onLoginHandler = async ({ id, password }) => {
     try {
-      const { data } = await axios.post(
-        `${process.env.REACT_APP_BASE_URL}/login?expiresIn=30m`,
-        newLoginUser
-      );
+      const { data } = await api.post(`/login?expiresIn=2m`, { id, password });
       dispatch(loginUser(data));
       alert("성공적으로 로그인 되었습니다!");
       navigate("/");
@@ -43,23 +28,21 @@ const Form = ({ isLogin, setIsLogin }) => {
       console.log(error);
       alert("아미디 또는 비밀번호가 일치하지 않습니다.");
     }
+
+    reset();
   };
 
-  const onRegisterHandler = async () => {
+  const onRegisterHandler = async ({
+    id,
+    password,
+    confirmPassword,
+    nickname,
+  }) => {
     if (password !== confirmPassword)
       return alert("비밀번호가 일치하지 않습니다");
 
-    const newUser = {
-      id,
-      password,
-      nickname,
-    };
-
     try {
-      const { data } = await axios.post(
-        `${process.env.REACT_APP_BASE_URL}/register`,
-        newUser
-      );
+      const { data } = await api.post(`/register`, { id, password, nickname });
       console.log(data);
       alert(data.message);
       if (data.success) {
@@ -67,8 +50,10 @@ const Form = ({ isLogin, setIsLogin }) => {
       }
     } catch (error) {
       console.log(error.message);
-      alert("아이디 비밀번호를 다시 확인해주세요.");
+      alert("아이디 또는 비밀번호를 다시 확인해주세요.");
     }
+
+    reset();
   };
 
   const userId = {
@@ -95,79 +80,86 @@ const Form = ({ isLogin, setIsLogin }) => {
     },
   };
 
-  return (
-    <>
-      <LoginForm onSubmit={(e) => e.preventDefault()}>
-        <InputBox>
-          <input
-            type="id"
-            placeholder="아이디"
-            minLength="4"
-            maxLength="10"
-            {...register("id", userId)}
-            value={id}
-            onChange={(e) => setId(e.target.value)}
-          />
-          {errors?.id && (
-            <div>
-              <span>{errors.id.message}</span>
-            </div>
-          )}
-          <input
-            type="password"
-            placeholder="비밀번호"
-            {...register("password", userPassword)}
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-          />
-          {errors?.password && (
-            <div>
-              <span>{errors.password.message}</span>
-            </div>
-          )}
+  const confirmPassword = {
+    required: "4~15자의 비밀번호를 입력해주세요",
+    minLength: {
+      value: 4,
+      message: "최소 4자입니다.",
+    },
+    maxLength: {
+      value: 15,
+      message: "최대 15자입니다.",
+    },
+  };
 
-          {isLogin || (
-            <>
-              <input
-                type="password"
-                placeholder="비밀번호 확인"
-                required
-                minLength="4"
-                maxLength="15"
-                value={confirmPassword}
-                onChange={(e) => setConfirmPassword(e.target.value)}
-              />
-              <input
-                type="text"
-                placeholder="닉네임"
-                required
-                minLength="1"
-                maxLength="10"
-                value={nickname}
-                onChange={(e) => setNickname(e.target.value)}
-              />
-            </>
-          )}
-        </InputBox>
-        {isLogin ? (
-          <ButtonBox>
-            <button onClick={onLoginHandler}>로그인</button>
-            <p>
-              아직 계정이 없으신가요?{" "}
-              <span onClick={() => setIsLogin(false)}>회원가입하기</span>
-            </p>
-          </ButtonBox>
-        ) : (
-          <ButtonBox>
-            <button onClick={onRegisterHandler}>회원가입</button>
-            <p>
-              이미 계정이 있으신가요?{" "}
-              <span onClick={() => setIsLogin(true)}>로그인하기</span>
-            </p>
-          </ButtonBox>
+  const nickname = {
+    required: "4~15자의 닉네임을 입력해주세요",
+    minLength: {
+      value: 4,
+      message: "최소 4자입니다.",
+    },
+    maxLength: {
+      value: 15,
+      message: "최대 15자입니다.",
+    },
+  };
+
+  return (
+    <LoginForm onSubmit={(e) => e.preventDefault()}>
+      <InputBox>
+        <input type="id" placeholder="아이디" {...register("id", userId)} />
+        {errors?.id && ( // 에러 메시지
+          <ErrorMessage>{errors.id.message}</ErrorMessage>
         )}
-      </LoginForm>
-    </>
+        <input
+          type="password"
+          placeholder="비밀번호"
+          {...register("password", userPassword)}
+        />
+        {errors?.password && (
+          <ErrorMessage>{errors.password.message}</ErrorMessage>
+        )}
+
+        {isLogin || (
+          <>
+            <input
+              type="password"
+              placeholder="비밀번호 확인"
+              {...register("confirmPassword", confirmPassword)}
+            />
+            {errors?.confirmPassword && (
+              <ErrorMessage>{errors.confirmPassword.message}</ErrorMessage>
+            )}
+
+            <input
+              type="text"
+              placeholder="닉네임"
+              {...register("nickname", nickname)}
+            />
+            {errors?.nickname && (
+              <ErrorMessage>{errors.nickname.message}</ErrorMessage>
+            )}
+          </>
+        )}
+      </InputBox>
+      {isLogin ? (
+        <ButtonBox>
+          <button onClick={handleSubmit(onLoginHandler)}>로그인</button>
+          <p>
+            아직 계정이 없으신가요?{" "}
+            <span onClick={() => setIsLogin(false)}>회원가입하기</span>
+          </p>
+        </ButtonBox>
+      ) : (
+        <ButtonBox>
+          <button onClick={handleSubmit(onRegisterHandler)}>회원가입</button>
+          <p>
+            이미 계정이 있으신가요?{" "}
+            <span onClick={() => setIsLogin(true)}>로그인하기</span>
+          </p>
+        </ButtonBox>
+      )}
+    </LoginForm>
   );
 };
 
@@ -212,6 +204,10 @@ const ButtonBox = styled.div`
     &:hover {
       background-color: var(--aespa4);
     }
+
+    &:disabled {
+      background-color: #fff;
+    }
   }
 
   span {
@@ -222,6 +218,11 @@ const ButtonBox = styled.div`
       color: #222;
     }
   }
+`;
+
+const ErrorMessage = styled.span`
+  color: var(--aespa4);
+  padding: 0 0.25rem;
 `;
 
 export default Form;

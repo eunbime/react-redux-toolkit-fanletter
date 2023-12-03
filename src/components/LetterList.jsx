@@ -5,13 +5,9 @@ import { useSelector } from "react-redux";
 
 const LetterList = () => {
   const activeMember = useSelector((state) => state.member);
-  const {
-    letters: letterList,
-    isLoading,
-    error,
-  } = useSelector((state) => state.letters);
+  const { letters, isLoading, error } = useSelector((state) => state.letters);
 
-  const filterdDrawLetters = letterList.filter(
+  const filteredLetters = letters.filter(
     (item) => item.member === activeMember || activeMember === ""
   );
 
@@ -20,13 +16,13 @@ const LetterList = () => {
 
   return (
     <StList>
-      {filterdDrawLetters?.length === 0 ? (
+      {filteredLetters?.length === 0 ? (
         <p>
           {activeMember}에게 남겨진 팬레터가 없습니다. <br />
           팬레터를 남겨보세요
         </p>
       ) : (
-        filterdDrawLetters?.map((item) => (
+        filteredLetters?.map((item) => (
           <LetterCard key={item.id} letter={item} />
         ))
       )}

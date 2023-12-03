@@ -4,43 +4,35 @@ import { useNavigate, useParams } from "react-router-dom";
 import styled from "styled-components";
 import { getFormattedDate } from "util/date";
 import { useDispatch, useSelector } from "react-redux";
-import { deleteLetter, editLetter } from "redux/modules/lettersSlice";
-import axios from "axios";
-import { __getUser } from "redux/modules/aurhSlice";
+import { __deleteLetter, __editLetter } from "redux/modules/lettersSlice";
+import { __getUser } from "redux/modules/userSlice";
 
 const DetailLetter = () => {
-  const { user, auth } = useSelector((state) => state.auth);
-  const letterList = useSelector((state) => state.letters.letters);
   const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const { auth } = useSelector((state) => state.auth);
+  const { user } = useSelector((state) => state.user);
+  const { letters } = useSelector((state) => state.letters);
   const [isEditing, setIsEditing] = useState(false);
   const [editingText, setEditingText] = useState("");
   const [authorized, setAuthorized] = useState(false);
-  const navigate = useNavigate();
   const { id } = useParams();
   const { nickname, avatar, member, createdAt, memberPhoto, content, userId } =
-    letterList?.find((letter) => letter.id === id);
+    letters?.find((letter) => letter.id === id);
 
   useEffect(() => {
-    console.log(user);
-    console.log(letterList);
+    console.log(letters);
     dispatch(__getUser(auth.accessToken));
     if (user?.success) {
       setAuthorized(user.id === userId);
     }
   }, [auth.accessToken]);
 
-  console.log(authorized);
-
-  // check
-  console.log("user", user.success);
-  console.log("auth", auth);
-
   const handleDelete = (id) => {
     const answer = window.confirm("정말로 삭제하시겠습니까?");
     if (!answer) return; // 취소 시
 
-    axios.delete(`${process.env.REACT_APP_SERVER_URL}/letters/${id}`);
-    dispatch(deleteLetter(id));
+    dispatch(__deleteLetter(id));
     navigate("/letter");
   };
 
@@ -50,7 +42,7 @@ const DetailLetter = () => {
     const answer = window.confirm("정말로 수정하시겠습니까?");
     if (!answer) return;
 
-    dispatch(editLetter({ id, editingText }));
+    dispatch(__editLetter({ id, editingText }));
     setIsEditing(false);
     setEditingText("");
   };

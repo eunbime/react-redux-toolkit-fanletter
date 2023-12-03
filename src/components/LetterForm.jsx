@@ -1,19 +1,17 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import styled from "styled-components";
 import { data } from "../shared/data";
-import uuid from "react-uuid";
 import { useDispatch, useSelector } from "react-redux";
-import { addLetter } from "redux/modules/lettersSlice";
+import { __addLetter } from "redux/modules/lettersSlice";
 import { selectMember } from "redux/modules/memberSlice";
-import axios, { AxiosHeaders } from "axios";
-import { __getUser, logoutUser } from "redux/modules/aurhSlice";
+import { logoutUser } from "redux/modules/authSlice";
 import { useNavigate } from "react-router-dom";
 
 const LetterForm = ({ setModalOpen }) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { nickname, userId, avatar } = useSelector((state) => state.auth.auth);
-  const user = useSelector((state) => state.auth.user);
+  const { user } = useSelector((state) => state.user);
   const [content, setContent] = useState("");
   const [member, setMember] = useState("카리나");
   const [memberPhoto, setMemberPhoto] = useState("karina.jpeg");
@@ -41,7 +39,6 @@ const LetterForm = ({ setModalOpen }) => {
       if (!nickname || !content) return alert("닉네임과 내용을 입력해주세요");
 
       const newLetter = {
-        // id: uuid(),
         nickname,
         content,
         member,
@@ -51,9 +48,10 @@ const LetterForm = ({ setModalOpen }) => {
         avatar,
       };
 
-      axios.post(`${process.env.REACT_APP_SERVER_URL}/letters`, newLetter);
+      // axios.post(`${process.env.REACT_APP_SERVER_URL}/letters`, newLetter);
 
-      dispatch(addLetter(newLetter));
+      // dispatch(addLetter(newLetter));
+      dispatch(__addLetter(newLetter));
     } catch (error) {
       console.log(error);
     }
@@ -135,17 +133,6 @@ const StSection = styled.section`
     font-weight: bold;
     color: var(--aespa4);
   }
-`;
-
-const StInput = styled.input.attrs({
-  required: true,
-  maxLength: 20,
-  placeholder: "20자 이내로 작성해주세요",
-})`
-  width: 25rem;
-  font-size: small;
-  padding: 0.5rem;
-  line-height: 1.25rem;
 `;
 
 const StTextArea = styled.textarea.attrs({

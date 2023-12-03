@@ -2,7 +2,7 @@ import axios from "axios";
 import Avatar from "components/common/Avatar";
 import React, { useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { updateProfile } from "redux/modules/aurhSlice";
+import { updateProfile } from "redux/modules/authSlice";
 import { updateLetter } from "redux/modules/lettersSlice";
 import styled from "styled-components";
 
@@ -11,7 +11,7 @@ const Profile = () => {
   const { userId, nickname, avatar, accessToken } = useSelector(
     (state) => state.auth.auth
   );
-  const letters = useSelector((state) => state.letters.letters);
+  const { letters } = useSelector((state) => state.letters);
   const [isEditing, setIsEditing] = useState(false);
   const [input, setInput] = useState(nickname);
   const [newName, setNewName] = useState("");
@@ -34,8 +34,8 @@ const Profile = () => {
   const onChangeFile = (e) => {
     if (e.target.files[0]) {
       const fileURL = URL.createObjectURL(e.target.files[0]);
-      setImgUrl(fileURL);
-      setImgFile(e.target.files[0]);
+      setImgUrl(fileURL); // 프리뷰
+      setImgFile(e.target.files[0]); // 이미지 파일
     }
   };
 
@@ -54,7 +54,7 @@ const Profile = () => {
     formData.append("avatar", imgFile);
     formData.append("nickname", input);
 
-    const answer = window.confirm("새 닉네임을 적용하시겠습니까?");
+    const answer = window.confirm("변경사항을 적용하시겠습니까?");
     if (!answer) return;
 
     // 서버 반영
@@ -70,6 +70,7 @@ const Profile = () => {
     );
 
     const profile = { ...response.data };
+    // 불필요한 데이터 삭제
     delete profile.message;
     delete profile.success;
 
@@ -80,7 +81,7 @@ const Profile = () => {
         axios.patch(
           `${process.env.REACT_APP_SERVER_URL}/letters/${letter.id}`,
           {
-            avatar: imgUrl,
+            avatar: profile.avatar,
             nickname: input,
           }
         );

@@ -4,16 +4,14 @@ import styled from "styled-components";
 import { getFormattedDate } from "util/date";
 import Avatar from "./common/Avatar";
 import { useDispatch, useSelector } from "react-redux";
-import { logoutUser } from "redux/modules/aurhSlice";
+import { logoutUser } from "redux/modules/authSlice";
 
 const LetterCard = ({ letter }) => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const user = useSelector((state) => state.auth.user);
+  const user = useSelector((state) => state.user.user);
   const { id, nickname, content, createdAt, member, avatar, memberPhoto } =
     letter;
-
-  console.log(user.nickname);
 
   const handleToDetailOrLogin = () => {
     if (!user.success) {

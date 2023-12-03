@@ -3,14 +3,28 @@ import { Link } from "react-router-dom";
 import styled from "styled-components";
 import { data } from "shared/data";
 import ModalProfile from "components/ModalProfile";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { __getUser } from "redux/modules/userSlice";
+import { __getLetters } from "redux/modules/lettersSlice";
 
 const PROFILE_PHOTO = "aespa-profile.jpeg";
 
 function Home() {
+  const dispatch = useDispatch();
+  const {
+    auth: { accessToken },
+  } = useSelector((state) => state.auth);
   const { isLoading } = useSelector((state) => state.auth.auth);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [memberId, setMemberId] = useState(0);
+
+  useEffect(() => {
+    dispatch(__getUser(accessToken));
+  }, [accessToken]);
+
+  useEffect(() => {
+    dispatch(__getLetters());
+  }, []);
 
   const handleModal = useCallback((id) => {
     const selectedMember = data.find((item) => item.id === id);

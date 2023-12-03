@@ -20,17 +20,11 @@ const Tabs = () => {
           <StFilterMember
             key={item.id}
             onClick={() => selectMemberHandler(item.member)}
-            $activeMember={activeMember}
+            $activeMember={activeMember === item.member}
           >
             <StBox $activeMember={activeMember}>
-              <img
-                src={item.memberPhoto}
-                alt=""
-                width="120rem"
-                style={{ objectFit: "cover" }}
-              />
+              <img src={item.memberPhoto} alt="member photo" />
             </StBox>
-            {item.member}
           </StFilterMember>
         );
       })}
@@ -43,8 +37,12 @@ const StButtonSection = styled.section`
   flex-wrap: wrap;
   display: flex;
   flex-direction: row;
-  gap: 2rem;
+  gap: 1rem;
   margin-bottom: 2rem;
+
+  @media (min-width: 650px) {
+    gap: 2rem;
+  }
 `;
 
 const StFilterMember = styled.div`
@@ -54,14 +52,13 @@ const StFilterMember = styled.div`
   justify-content: space-between;
   align-items: center;
   border: none;
-  gap: 1rem;
 `;
 
 const StBox = styled.div`
-  width: 7rem;
-  height: 7rem;
+  width: 6rem;
+  height: 6rem;
   margin-bottom: 0.25rem;
-  transform: ${(props) => (props.selected ? "scale(1.1)" : "scale(1)")};
+  transform: ${(props) => (props.activeMember ? "scale(1.1)" : "scale(1.0)")};
   border-radius: 100px;
   /* border: ${(props) =>
     props.selected ? "2.5px solid transparent" : "none"}; */
@@ -79,9 +76,20 @@ const StBox = styled.div`
   transition: 0.3s;
   overflow: hidden;
   box-shadow: ${(props) =>
-    props.selected ? "0px 0px 10px 5px #eee" : "0px 0px 15px 1px #666"};
+    props.activeMember ? "0px 0px 10px 5px #eee" : "none"};
   &:hover {
     transform: scale(1.1);
+  }
+
+  img {
+    width: inherit;
+    height: inherit;
+    object-fit: cover;
+  }
+
+  @media (min-width: 650px) {
+    width: 8rem;
+    height: 8rem;
   }
 `;
 

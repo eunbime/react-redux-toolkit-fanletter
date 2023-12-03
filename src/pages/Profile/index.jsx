@@ -4,6 +4,7 @@ import React, { useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { updateProfile } from "redux/modules/authSlice";
 import { updateLetter } from "redux/modules/lettersSlice";
+import { __getUser } from "redux/modules/userSlice";
 import styled from "styled-components";
 
 const Profile = () => {
@@ -18,6 +19,10 @@ const Profile = () => {
   const [imgUrl, setImgUrl] = useState("");
   const [imgFile, setImgFile] = useState(null);
   const imageInput = useRef();
+
+  useEffect(() => {
+    dispatch(__getUser(accessToken));
+  }, [accessToken]);
 
   useEffect(() => {
     setNewName(nickname);

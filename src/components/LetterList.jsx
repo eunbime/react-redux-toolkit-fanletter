@@ -17,10 +17,9 @@ const LetterList = () => {
   return (
     <StList>
       {filteredLetters?.length === 0 ? (
-        <p>
-          {activeMember}에게 남겨진 팬레터가 없습니다. <br />
-          팬레터를 남겨보세요
-        </p>
+        <NotFoundLetter>
+          <p>현재 {activeMember}에게 남겨진 팬레터가 없습니다. 🥲</p>
+        </NotFoundLetter>
       ) : (
         filteredLetters?.map((item) => (
           <LetterCard key={item.id} letter={item} />
@@ -31,11 +30,25 @@ const LetterList = () => {
 };
 
 const StList = styled.div`
-  max-width: 100%;
+  width: 450px;
+  margin: 0 auto;
   display: flex;
   flex-direction: column;
   gap: 1rem;
   margin-top: 1rem;
+  transition: all 0.3 ease-in-out;
+
+  @media (min-width: 650px) {
+    width: 650px;
+  }
+`;
+
+const NotFoundLetter = styled.div`
+  background-color: #fff;
+  border-radius: 0.5rem;
+  padding: 2rem;
+  font-size: large;
+  text-align: center;
 `;
 
 export default React.memo(LetterList);

@@ -18,7 +18,7 @@ const Nav = () => {
   return (
     <HeaderNav>
       <LetterButton onClick={() => navigate("/letter")}>
-        팬레터 작성
+        팬레터 작성하기
       </LetterButton>
       <ProfileNav>
         <ProfileFigure onClick={() => setIsOpenMenu(!isOpenMenu)}>
@@ -75,6 +75,7 @@ const ProfileFigure = styled.figure`
   img {
     width: inherit;
     height: inherit;
+    object-fit: cover;
   }
 `;
 

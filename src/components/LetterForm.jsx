@@ -1,22 +1,23 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import { data } from "../shared/data";
 import { useDispatch, useSelector } from "react-redux";
 import { __addLetter } from "redux/modules/lettersSlice";
 import { selectMember } from "redux/modules/memberSlice";
-import { logoutUser } from "redux/modules/authSlice";
-import { useNavigate } from "react-router-dom";
+import { __getUser } from "redux/modules/userSlice";
 
 const LetterForm = ({ setModalOpen }) => {
   const dispatch = useDispatch();
-  const navigate = useNavigate();
-  const { nickname, userId, avatar } = useSelector((state) => state.auth.auth);
-  const { user } = useSelector((state) => state.user);
+  const { nickname, userId, avatar, accessToken } = useSelector(
+    (state) => state.auth.auth
+  );
   const [content, setContent] = useState("");
   const [member, setMember] = useState("카리나");
   const [memberPhoto, setMemberPhoto] = useState("karina.jpeg");
 
-  console.log(user);
+  useEffect(() => {
+    dispatch(__getUser(accessToken));
+  }, [accessToken]);
 
   const handleContent = (e) => {
     setContent(e.target.value);
@@ -31,11 +32,6 @@ const LetterForm = ({ setModalOpen }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      if (!user.success) {
-        alert("로그인이 만료되었습니다.");
-        dispatch(logoutUser());
-        navigate("/login");
-      }
       if (!nickname || !content) return alert("닉네임과 내용을 입력해주세요");
 
       const newLetter = {

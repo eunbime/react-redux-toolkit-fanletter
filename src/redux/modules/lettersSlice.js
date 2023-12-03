@@ -18,7 +18,7 @@ export const __getLetters = createAsyncThunk(
         `${process.env.REACT_APP_SERVER_URL}/letters?_sort=createdAt&_order=desc`
       );
       console.log(data);
-      // localStorage.setItem("letters", JSON.stringify(data));
+      localStorage.setItem("letters", JSON.stringify(data));
       return thunkAPI.fulfillWithValue(data);
     } catch (error) {
       console.log(error);

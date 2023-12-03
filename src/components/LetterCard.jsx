@@ -3,28 +3,18 @@ import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import { getFormattedDate } from "util/date";
 import Avatar from "./common/Avatar";
-import { useDispatch, useSelector } from "react-redux";
-import { logoutUser } from "redux/modules/authSlice";
 
 const LetterCard = ({ letter }) => {
   const navigate = useNavigate();
-  const dispatch = useDispatch();
-  const user = useSelector((state) => state.user.user);
   const { id, nickname, content, createdAt, member, avatar, memberPhoto } =
     letter;
 
-  const handleToDetailOrLogin = () => {
-    if (!user.success) {
-      alert("로그인이 만료되었습니다.");
-      dispatch(logoutUser());
-      navigate("/login");
-    } else {
-      navigate(`/letter/${id}`);
-    }
+  const handleToDetail = () => {
+    navigate(`/letter/${id}`);
   };
 
   return (
-    <LetterWrapper onClick={handleToDetailOrLogin}>
+    <LetterWrapper onClick={handleToDetail}>
       <ProFileContainer>
         <li>
           <Avatar src={avatar} />
@@ -48,7 +38,7 @@ const LetterCard = ({ letter }) => {
 };
 
 const LetterWrapper = styled.ul`
-  max-width: 650px;
+  width: 100%;
   padding: 1rem;
   display: flex;
   flex-direction: column;

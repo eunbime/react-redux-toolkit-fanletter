@@ -1,5 +1,4 @@
-import axios from "axios";
-import React, { useState } from "react";
+import React from "react";
 import { useForm } from "react-hook-form";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
@@ -20,7 +19,7 @@ const Form = ({ isLogin, setIsLogin }) => {
 
   const onLoginHandler = async ({ id, password }) => {
     try {
-      const { data } = await api.post(`/login?expiresIn=2m`, { id, password });
+      const { data } = await api.post(`/login?expiresIn=10m`, { id, password });
       dispatch(loginUser(data));
       alert("성공적으로 로그인 되었습니다!");
       navigate("/");

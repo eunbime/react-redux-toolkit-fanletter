@@ -21,7 +21,6 @@ const DetailLetter = () => {
     letters?.find((letter) => letter.id === id);
 
   useEffect(() => {
-    console.log(letters);
     dispatch(__getUser(auth.accessToken));
     if (user?.success) {
       setAuthorized(user.id === userId);

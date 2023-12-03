@@ -1,15 +1,11 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import LetterForm from "../../components/LetterForm";
 import LetterList from "../../components/LetterList";
 import styled from "styled-components";
 import Tabs from "components/Tabs";
-import { useDispatch, useSelector } from "react-redux";
 
 function Letter() {
-  const dispatch = useDispatch();
   const [modalOpen, setModalOpen] = useState(false);
-  const store = useSelector((state) => state);
-  console.log(store);
 
   const handleModal = () => {
     setModalOpen(true);

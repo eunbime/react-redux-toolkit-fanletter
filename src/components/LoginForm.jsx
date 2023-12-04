@@ -4,7 +4,7 @@ import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { loginUser } from "redux/modules/authSlice";
 import styled from "styled-components";
-import api from "../axios/api";
+import loginApi from "../axios/api";
 
 const Form = ({ isLogin, setIsLogin }) => {
   const dispatch = useDispatch();
@@ -19,7 +19,10 @@ const Form = ({ isLogin, setIsLogin }) => {
 
   const onLoginHandler = async ({ id, password }) => {
     try {
-      const { data } = await api.post(`/login?expiresIn=10m`, { id, password });
+      const { data } = await loginApi.post(`/login?expiresIn=10m`, {
+        id,
+        password,
+      });
       dispatch(loginUser(data));
       alert("성공적으로 로그인 되었습니다!");
       navigate("/");
@@ -41,7 +44,11 @@ const Form = ({ isLogin, setIsLogin }) => {
       return alert("비밀번호가 일치하지 않습니다");
 
     try {
-      const { data } = await api.post(`/register`, { id, password, nickname });
+      const { data } = await loginApi.post(`/register`, {
+        id,
+        password,
+        nickname,
+      });
       console.log(data);
       alert(data.message);
       if (data.success) {
@@ -56,50 +63,50 @@ const Form = ({ isLogin, setIsLogin }) => {
   };
 
   const userId = {
-    required: "4~10자의 아이디를 입력해주세요",
+    required: "필수 입력란입니다.",
     minLength: {
       value: 4,
-      message: "최소 4자입니다.",
+      message: "최소 4자를 입력해주세요.",
     },
     maxLength: {
       value: 10,
-      message: "최대 10자입니다.",
+      message: "최대 10자까지 입력하실 수 있습니다..",
     },
   };
 
   const userPassword = {
-    required: "4~15자의 비밀번호를 입력해주세요",
+    required: "필수 입력란입니다.",
     minLength: {
       value: 4,
-      message: "최소 4자입니다.",
+      message: "최소 4자를 입력해주세요.",
     },
     maxLength: {
       value: 15,
-      message: "최대 15자입니다.",
+      message: "최대 15자까지 입력하실 수 있습니다.",
     },
   };
 
   const confirmPassword = {
-    required: "4~15자의 비밀번호를 입력해주세요",
+    required: "필수 입력란입니다.",
     minLength: {
       value: 4,
-      message: "최소 4자입니다.",
+      message: "최소 4자를 입력해주세요.",
     },
     maxLength: {
       value: 15,
-      message: "최대 15자입니다.",
+      message: "최대 15자까지 입력하실 수 있습니다.",
     },
   };
 
   const nickname = {
-    required: "4~15자의 닉네임을 입력해주세요",
+    required: "필수 입력란입니다.",
     minLength: {
-      value: 4,
-      message: "최소 4자입니다.",
+      value: 1,
+      message: "최소 1자를 입력해주세요.",
     },
     maxLength: {
-      value: 15,
-      message: "최대 15자입니다.",
+      value: 10,
+      message: "최대 10자까지 입력하실 수 있습니다.",
     },
   };
 

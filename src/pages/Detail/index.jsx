@@ -23,7 +23,7 @@ const DetailLetter = () => {
   useEffect(() => {
     dispatch(__getUser(auth.accessToken));
     if (user?.success) {
-      setAuthorized(user.id === userId);
+      setAuthorized(user.id === userId); // 권한 유무
     }
   }, [auth.accessToken]);
 
@@ -152,15 +152,6 @@ const ProFileContainer = styled.section`
   justify-content: space-between;
   padding: 0 0 1rem 0;
   border-bottom: solid 1px #d4d4d4;
-`;
-
-const Profile = styled.div`
-  width: 3rem;
-  height: 3rem;
-  border-radius: 50%;
-  background-color: gray;
-  margin-bottom: 0.5rem;
-  overflow: hidden;
 `;
 
 const ButtonSection = styled.section`

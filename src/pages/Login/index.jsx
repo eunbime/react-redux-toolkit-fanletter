@@ -1,15 +1,9 @@
 import Form from "components/LoginForm";
-import React, { useEffect, useState } from "react";
-import { useSelector } from "react-redux";
+import React, { useState } from "react";
 import styled from "styled-components";
 
 const Login = () => {
-  const auth = useSelector((state) => state.auth.auth);
   const [isLogin, setIsLogin] = useState(true);
-
-  useEffect(() => {
-    console.log(auth);
-  }, [auth]);
 
   return (
     <Container>

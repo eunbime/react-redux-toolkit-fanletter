@@ -35,8 +35,7 @@ const userSlice = createSlice({
       })
       .addCase(__getUser.rejected, (state, action) => {
         state.error = action.payload;
-      })
-      .addDefaultCase((state, action) => {});
+      });
   },
 });
 

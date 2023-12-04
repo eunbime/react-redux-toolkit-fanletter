@@ -95,7 +95,7 @@ const Profile = () => {
 
     dispatch(updateLetter({ userId, imgUrl, input }));
 
-    // 화면 반영 (안하면 새로고침해야 반영됨)
+    // 화면 반영
     setNewName(input);
     setIsEditing(false);
   };
@@ -117,15 +117,16 @@ const Profile = () => {
         />
         {isEditing ? (
           <>
-            <input
+            <NicknameInput
               defaultValue={input}
               onChange={(e) => setInput(e.target.value)}
+              autoFocus
             />
             <span>{userId}</span>
-            <div>
+            <ButtonBox>
               <button onClick={cancelHandler}>취소</button>
               <button onClick={completeHandler}>수정완료</button>
-            </div>
+            </ButtonBox>
           </>
         ) : (
           <>
@@ -187,4 +188,14 @@ const FileInput = styled.input`
   display: none;
 `;
 
+const NicknameInput = styled.input`
+  font-size: medium;
+  padding: 0.25rem 0.5rem;
+  outline: none;
+`;
+
+const ButtonBox = styled.div`
+  display: flex;
+  gap: 1rem;
+`;
 export default Profile;

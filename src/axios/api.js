@@ -61,6 +61,7 @@ loginApi.interceptors.response.use(
     console.log("인터셉터 응답 오류 발생", error.code);
     alert("로그인이 만료되었습니다");
     localStorage.removeItem("user");
+    localStorage.removeItem("letters");
     window.location.replace("/login");
 
     return Promise.reject(error);

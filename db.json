@@ -1,34 +1,14 @@
 {
   "letters": [
     {
-      "nickname": "안농",
-      "content": "안농",
-      "member": "카리나",
-      "memberPhoto": "karina.jpeg",
-      "createdAt": "2023-12-01T08:44:02.763Z",
-      "userId": "6767",
-      "avatar": "https://react-jwt-avatar.s3.ap-northeast-2.amazonaws.com/23-12-01/8603238e-349e-4512-9a8f-6fa724afd957.jpg",
-      "id": "oWOXrT4"
-    },
-    {
       "nickname": "멍멍2",
-      "content": "멍",
+      "content": "안녕!",
       "member": "카리나",
       "memberPhoto": "karina.jpeg",
-      "createdAt": "2023-12-04T00:46:21.344Z",
+      "createdAt": "2023-12-04T02:52:12.176Z",
       "userId": "10141014",
       "avatar": "https://react-jwt-avatar.s3.ap-northeast-2.amazonaws.com/23-12-03/4de56abc-a5d4-4bd0-be6d-4e46e4e620ac.jpg",
-      "id": "5SDn0Y9"
-    },
-    {
-      "nickname": "멍멍2",
-      "content": "멍멍 test",
-      "member": "카리나",
-      "memberPhoto": "karina.jpeg",
-      "createdAt": "2023-12-04T00:46:25.560Z",
-      "userId": "10141014",
-      "avatar": "https://react-jwt-avatar.s3.ap-northeast-2.amazonaws.com/23-12-03/4de56abc-a5d4-4bd0-be6d-4e46e4e620ac.jpg",
-      "id": "vXSm8KE"
+      "id": 1
     }
   ]
 }

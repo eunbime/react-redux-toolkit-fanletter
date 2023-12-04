@@ -4,7 +4,7 @@ import axios from "axios";
 const initialState = {
   letters: localStorage.getItem("letters")
     ? JSON.parse(localStorage.getItem("letters"))
-    : {},
+    : [],
   isLoading: false,
   isError: false,
   error: null,

@@ -7,7 +7,7 @@ const LetterList = () => {
   const activeMember = useSelector((state) => state.member);
   const { letters, isLoading, error } = useSelector((state) => state.letters);
 
-  const filteredLetters = letters.filter(
+  const filteredLetters = letters?.filter(
     (item) => item.member === activeMember || activeMember === ""
   );
 
